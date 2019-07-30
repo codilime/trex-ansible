@@ -3,8 +3,6 @@ set -e
 
 if [ ! -f /etc/trex_cfg.yaml ]; then
 
-  # this is in very quick and simple form for now, configuration
-  # will be probably expanded soon.
   if [ -z "$DPDK_INTERFACES" ]; then
     echo " * Giving up. No DPDK_INTERFACES variable defined. Cannot generate configuration."
     exit 1

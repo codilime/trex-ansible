@@ -1,0 +1,25 @@
+---
+# See docs here: 
+#   https://trex-tgn.cisco.com/trex/doc/trex_manual.html#_platform_yaml_cfg_argument
+
+- version: 2
+  port_limit: {{ trex_dpdk_pci_interfaces|length }}
+  interfaces: [{% for if in trex_dpdk_pci_interfaces %}'{{ if.id }}'{% if not loop.last %}, {% endif %}{% endfor %}]
+  port_info:
+{% for if in trex_dpdk_pci_interfaces %}
+{% if if.default_gw is defined %}
+      - default_gw: {{ if.default_gw }}
+{% elif if.dest_mac is defined %}
+      - dest_mac: {{ if.dest_mac }}
+{%- endif %}
+{% if if.src_mac is defined %}
+        src_mac: {{ if.src_mac }}
+{% endif %}
+{% if if.ip is defined %}
+        ip: {{ if.ip }}
+{% endif %}
+{% if if.vlan is defined %}
+        vlan: {{ if.vlan }}
+{% endif %}
+
+{% endfor %}

@@ -1,0 +1,13 @@
+# Supported interface params are: id, default_gw, ip, src_mac, dest_mac, vlan. 
+# For more info please see:
+# https://trex-tgn.cisco.com/trex/doc/trex_manual.html#_platform_yaml_cfg_argument
+
+# PCI ids taken from `lspci` output
+trex_dpdk_pci_interfaces:
+  - id: '00:06.0'
+    default_gw: 10.100.17.3
+    ip: 10.100.17.2
+  - id: 'dummy'
+    default_gw: 2.2.2.2
+    ip: 1.1.1.1
+
