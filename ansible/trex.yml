@@ -1,0 +1,7 @@
+---
+
+- name: Setup T-Rex Traffic Generator
+  hosts: trex
+  become: yes
+  roles:
+    - trex

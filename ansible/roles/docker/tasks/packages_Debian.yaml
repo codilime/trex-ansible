@@ -1,0 +1,34 @@
+---
+
+- name: install additional packages for docker
+  apt:
+    name:
+      - apt-transport-https
+      - software-properties-common
+      - ca-certificates
+      - python3-pip
+    state: present
+
+- name: add apt keys for docker
+  apt_key:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+    state: present
+
+- name: add docker apt repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{                     ansible_distribution_release }} stable"
+    state: present
+
+- name: install docker packages
+  apt:
+    name: "docker-ce{% if docker_version is defined %}={{ docker_version }}{% endif %}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+    force: yes
+
+- name: prevent docker packages upgrade
+  dpkg_selections:
+    name: docker-ce
+    selection: hold
+

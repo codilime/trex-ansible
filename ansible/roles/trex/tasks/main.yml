@@ -1,0 +1,36 @@
+---
+
+- name: prefetch trex docker image
+  docker_image:
+    name: "{{ trex_docker_image }}"
+    state: present
+    force_source: yes
+    source: pull
+
+  # we must have properly installed kernel-headers in /usr/src/ and linked in 
+  # /lib/modules/`uname -r`/build
+- name: start fully privileged container with TRex in interactive mode
+  docker_container:
+    name: "trex-server"
+    hostname: "{{ ansible_hostname }}-trex-i"
+    image: "{{ trex_docker_image }}"
+    capabilities: [ all ]
+    privileged: yes
+    recreate: "{{ trex_force_recreate | default('false') }}"
+    state: "{{ trex_force_state | default('started') }}"
+    restart_policy: no
+    init: yes
+    #network_mode: host
+    #entrypoint: ['sleep', 'infinity']
+    published_ports:
+      - 127.0.0.1:4500:4500
+      - 127.0.0.1:4501:4501
+      - 127.0.0.1:4507:4507
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - /usr/src:/usr/src:ro
+      - /sys/bus/pci/devices:/sys/bus/pci/devices
+      - /sys/devices/system/node:/sys/devices/system/node
+      - /dev:/dev
+    env:
+      DPDK_INTERFACES: "{% for int in trex_dpdk_pci_interfaces %}{{ int }} {% endfor %}"

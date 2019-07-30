@@ -1,0 +1,33 @@
+---
+
+- name: make sure config directories exist
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: 0700
+  with_items:
+    - /etc/docker
+    - /root/.docker
+
+- name: template docker configuration
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify:
+    - restart docker
+
+- name: include docker packages installation
+  include_tasks: packages_{{ ansible_os_family }}.yaml
+
+- name: enable docker service
+  systemd:
+    name: docker
+    daemon_reload: yes
+    enabled: yes
+    state: started
+    masked: no
+
+- name: install python wrapper for docker
+  pip:
+    name: docker
+

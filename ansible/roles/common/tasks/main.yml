@@ -1,0 +1,15 @@
+---
+
+- name: install kernel headers on RedHat based systems
+  yum:
+    name: kernel-devel-{{ ansible_kernel }}
+    update_cache: yes
+  when: ansible_os_family == 'RedHat'
+
+- name: install kernel headers on Debian based systems
+  apt:
+    name: linux-headers-{{ ansible_kernel }}
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Debian'
+
