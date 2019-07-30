@@ -1,16 +1,19 @@
 #!/bin/bash
 set -e
 
-# this is in very quick and simple form for now, configuration
-# will be probably expanded soon.
+if [ ! -f /etc/trex_cfg.yaml ]; then
 
-if [ -z "$DPDK_INTERFACES" ]; then
-  echo " * Giving up. No DPDK_INTERFACES variable defined."
-  exit 1
+  # this is in very quick and simple form for now, configuration
+  # will be probably expanded soon.
+  if [ -z "$DPDK_INTERFACES" ]; then
+    echo " * Giving up. No DPDK_INTERFACES variable defined. Cannot generate configuration."
+    exit 1
+  fi
+
+  echo " * No /etc/trex_cfg.yaml present, generating configuration..."
+  INTERFACES=`for i in $DPDK_INTERFACES; do echo -n "$i "; done`
+  /opt/trex/dpdk_setup_ports.py -c $INTERFACES -o /etc/trex_cfg.yaml
+
 fi
-
-INTERFACES=`for i in $DPDK_INTERFACES; do echo -n "$i "; done`
-
-/opt/trex/dpdk_setup_ports.py -c $INTERFACES -o /etc/trex_cfg.yaml
 
 exec "$@"
