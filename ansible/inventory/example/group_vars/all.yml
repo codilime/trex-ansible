@@ -1,7 +1,5 @@
 ---
 
----
-
 # PCI ids taken from `lspci` output
 trex_dpdk_pci_interfaces:
   - '00:06.0'
