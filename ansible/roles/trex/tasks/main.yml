@@ -7,6 +7,11 @@
     force_source: yes
     source: pull
 
+- name: template trex configuration
+  template:
+    src: trex_cfg.yaml.j2
+    dest: /etc/trex_cfg.yaml
+
   # we must have properly installed kernel-headers in /usr/src/ and linked in 
   # /lib/modules/`uname -r`/build
 - name: start fully privileged container with TRex in interactive mode
@@ -27,10 +32,9 @@
       - 127.0.0.1:4501:4501
       - 127.0.0.1:4507:4507
     volumes:
+      - /etc/trex_cfg.yaml:/etc/trex_cfg.yaml:ro
       - /lib/modules:/lib/modules:ro
       - /usr/src:/usr/src:ro
       - /sys/bus/pci/devices:/sys/bus/pci/devices
       - /sys/devices/system/node:/sys/devices/system/node
       - /dev:/dev
-    env:
-      DPDK_INTERFACES: "{% for int in trex_dpdk_pci_interfaces %}{{ int }} {% endfor %}"
