@@ -1,0 +1,5 @@
+---
+
+# Uncomment only if you understand security implications! 
+#trex_docker_published_ports: 
+#  - 0.0.0.0:4500:4500

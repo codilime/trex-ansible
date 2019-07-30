@@ -25,12 +25,7 @@
     state: "{{ trex_force_state | default('started') }}"
     restart_policy: no
     init: yes
-    #network_mode: host
-    #entrypoint: ['sleep', 'infinity']
-    published_ports:
-      - 127.0.0.1:4500:4500
-      - 127.0.0.1:4501:4501
-      - 127.0.0.1:4507:4507
+    published_ports: "{{ trex_docker_published_ports }}"
     volumes:
       - /etc/trex_cfg.yaml:/etc/trex_cfg.yaml:ro
       - /lib/modules:/lib/modules:ro

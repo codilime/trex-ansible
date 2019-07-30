@@ -1,3 +1,8 @@
 ---
 
 trex_docker_image: codilimecom/trex:latest
+
+trex_docker_published_ports: 
+  - 127.0.0.1:4500:4500
+  - 127.0.0.1:4501:4501
+  - 127.0.0.1:4507:4507
