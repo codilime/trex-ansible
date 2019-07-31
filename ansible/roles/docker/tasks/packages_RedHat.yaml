@@ -6,13 +6,24 @@
     state: present
     update_cache: yes
 
+- name: install python2-pip
+  yum:
+    name: python2-pip
+    state: present
+  when: ansible_python_version is version('3', '<')
+
+- name: install python34-pip
+  yum:
+    name: python34-pip
+    state: present
+  when: ansible_python_version is version('3', '>=')
+
 - name: install required packages for docker
   yum:
     name:
       - yum-utils
       - device-mapper-persistent-data
       - lvm2
-      - python2-pip
     state: present
     update_cache: no
 
@@ -29,3 +40,8 @@
     state: present
     update_cache: yes
 
+- name: install python wrapper for docker
+  pip:
+    name: docker
+    state: present
+   

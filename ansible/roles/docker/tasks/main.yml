@@ -26,8 +26,3 @@
     enabled: yes
     state: started
     masked: no
-
-- name: install python wrapper for docker
-  pip:
-    name: docker
-

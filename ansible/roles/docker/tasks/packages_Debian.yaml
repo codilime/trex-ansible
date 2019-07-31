@@ -1,13 +1,27 @@
 ---
 
+- name: install python-pip
+  apt:
+    name: python-pip
+    state: present
+    install_recommends: no
+  when: ansible_python_version is version('3', '<')
+
+- name: install python3-pip
+  apt:
+    name: python3-pip
+    state: present
+    install_recommends: no
+  when: ansible_python_version is version('3', '>=') 
+
 - name: install additional packages for docker
   apt:
     name:
       - apt-transport-https
       - software-properties-common
       - ca-certificates
-      - python3-pip
     state: present
+    install_recommends: no
 
 - name: add apt keys for docker
   apt_key:
@@ -32,3 +46,6 @@
     name: docker-ce
     selection: hold
 
+- name: install python wrapper for docker
+  pip:
+    name: docker
