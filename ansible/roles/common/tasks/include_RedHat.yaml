@@ -5,3 +5,21 @@
     name: kernel-devel-{{ ansible_kernel }}
     update_cache: yes
 
+- name: install epel release
+  yum:
+    name: epel-release
+    state: present
+    update_cache: yes
+    
+- name: install python2-pip
+  yum:
+    name: python2-pip
+    state: present
+  when: ansible_python_version is version('3', '<')
+
+- name: install python34-pip                                                                           
+  yum:
+    name: python34-pip
+    state: present
+  when: ansible_python_version is version('3', '>=')
+    

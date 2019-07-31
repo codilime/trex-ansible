@@ -1,34 +1,5 @@
 ---
 
-- name: install epel release
-  yum:
-    name: epel-release
-    state: present
-    update_cache: yes
-  when: ansible_distribution != 'Fedora'
-
-- name: install python2-pip
-  yum:
-    name: python2-pip
-    state: present
-  when: ansible_python_version is version('3', '<')
-
-- name: install python34-pip
-  yum:
-    name: python34-pip
-    state: present
-  when: 
-    - ansible_python_version is version('3', '>=')
-    - ansible_distribution != 'Fedora'
-
-- name: install python3-pip
-  yum:
-    name: python3-pip
-    state: present
-  when: 
-    - ansible_python_version is version('3', '>=')
-    - ansible_distribution == 'Fedora'
-
 - name: install required packages for docker
   yum:
     name:

@@ -1,17 +1,5 @@
 ---
 
-- name: install python2-pip
-  yum:
-    name: python2-pip
-    state: present
-  when: ansible_python_version is version('3', '<')
-
-- name: install python3-pip
-  yum:
-    name: python3-pip
-    state: present
-  when: ansible_python_version is version('3', '>=')
-
 - name: install required packages for docker
   yum:
     name:

@@ -21,8 +21,8 @@
   vars:
     params:
       files:
-        - "packages_{{ ansible_distribution }}.yaml"
-        - "packages_{{ ansible_os_family }}.yaml"
+        - "include_{{ ansible_distribution }}.yaml"
+        - "include_{{ ansible_os_family }}.yaml"
       paths: [ '.' ]
 
 - name: enable docker service
