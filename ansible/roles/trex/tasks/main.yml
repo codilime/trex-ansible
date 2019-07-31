@@ -20,11 +20,11 @@
     hostname: "{{ ansible_hostname }}-trex-i"
     image: "{{ trex_docker_image }}"
     capabilities: [ all ]
-    privileged: yes
+    privileged: "yes"
     recreate: "{{ trex_force_recreate | default('false') }}"
     state: "{{ trex_force_state | default('started') }}"
-    restart_policy: no
-    init: yes
+    restart_policy: "no"
+    init: "yes"
     published_ports: "{{ trex_docker_published_ports }}"
     volumes:
       - /etc/trex_cfg.yaml:/etc/trex_cfg.yaml:ro

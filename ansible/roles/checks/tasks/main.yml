@@ -7,3 +7,6 @@
       "You must update Ansible to at least {{ ansible_required_version }} version."
   run_once: yes
   delegate_to: localhost
+
+- name: ping play hosts
+  ping:
