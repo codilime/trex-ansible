@@ -27,11 +27,6 @@
     cache_valid_time: 3600
     force: yes
 
-- name: prevent docker packages upgrade
-  dpkg_selections:
-    name: docker-ce
-    selection: hold
-
 - name: install python wrapper for docker
   pip:
     name: docker
