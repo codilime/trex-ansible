@@ -3,7 +3,8 @@
 - name: Gather facts always, regardless of tags
   hosts: trex
   become: yes
-  tasks: []
+  roles:
+    - { role: checks, tags: [ checks ] }
   tags: [ always ]
 
 - name: Prepare & install system dependencies
@@ -12,4 +13,4 @@
   roles:
     - { role: common, tags: [ common ] }
     - { role: docker, tags: [ docker ] }
-  tags: system
+  tags: [ system ]

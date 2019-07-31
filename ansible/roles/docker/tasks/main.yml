@@ -17,7 +17,13 @@
     - restart docker
 
 - name: include docker packages installation
-  include_tasks: packages_{{ ansible_os_family }}.yaml
+  include_tasks: "{{lookup('first_found', params)}}"
+  vars:
+    params:
+      files:
+        - "include_{{ ansible_distribution }}.yaml"
+        - "include_{{ ansible_os_family }}.yaml"
+      paths: [ '.' ]
 
 - name: enable docker service
   systemd:
@@ -26,8 +32,3 @@
     enabled: yes
     state: started
     masked: no
-
-- name: install python wrapper for docker
-  pip:
-    name: docker
-

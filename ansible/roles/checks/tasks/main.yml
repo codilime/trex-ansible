@@ -1,0 +1,12 @@
+---
+
+- name: verify ansible version
+  assert:
+    that: "ansible_version.full is version_compare(ansible_required_version, '>=')"
+    msg: >
+      "You must update Ansible to at least {{ ansible_required_version }} version."
+  run_once: yes
+  delegate_to: localhost
+
+- name: ping play hosts
+  ping:

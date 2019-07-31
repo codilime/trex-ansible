@@ -1,18 +1,11 @@
 ---
 
-- name: install epel release
-  yum:
-    name: epel-release
-    state: present
-    update_cache: yes
-
 - name: install required packages for docker
   yum:
     name:
       - yum-utils
       - device-mapper-persistent-data
       - lvm2
-      - python2-pip
     state: present
     update_cache: no
 
@@ -20,7 +13,7 @@
   yum_repository:
     name: docker-ce-stable
     description: Docker CE Stable - $basearch
-    baseurl: https://download.docker.com/linux/{{ ansible_distribution|lower }}/{{                   ansible_distribution_major_version }}/$basearch/stable
+    baseurl: https://download.docker.com/linux/{{ ansible_distribution|lower }}/{{ ansible_distribution_major_version }}/$basearch/stable
     gpgkey: https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg
 
 - name: install docker 
@@ -29,3 +22,8 @@
     state: present
     update_cache: yes
 
+- name: install python wrapper for docker
+  pip:
+    name: docker
+    state: present
+   
