@@ -1,6 +1,8 @@
 ---
 
-# Uncomment only if you understand security implications! 
+# That will make TRex listen on all host's addresses. 
+# Make sure you have firewall if you're launching on 
+# non-safe network or cloud. 
 #trex_docker_published_ports: 
 #  - 0.0.0.0:4500:4500
-#  - 0.0.0.0:4500:4501
+#  - 0.0.0.0:4501:4501
