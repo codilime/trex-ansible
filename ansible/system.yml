@@ -10,6 +10,7 @@
   hosts: trex
   become: yes
   roles:
+    - { role: checks, tags: [ checks ] }
     - { role: common, tags: [ common ] }
     - { role: docker, tags: [ docker ] }
   tags: system

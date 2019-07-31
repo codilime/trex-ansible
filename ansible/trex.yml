@@ -4,4 +4,5 @@
   hosts: trex
   become: yes
   roles:
-    - trex
+    - { role: checks, tags: [ checks ] }
+    - { role: trex,   tags: [ trex ] }
