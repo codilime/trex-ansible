@@ -11,7 +11,7 @@ Multiple machines may be set up with installer, although we don't use them for n
 ## Requirements
 
 * Modern Linux Ubuntu or CentOS bare metal or virtual machine with Docker daemon, (Docker SDK)[https://docker-py.readthedocs.io/en/stable/] and kernel headers properly installed, 
-* (Ansible)[https://www.ansible.com/] on your laptop or any management host where you're going to run it. 
+* (Ansible)[https://www.ansible.com/] (at least 2.8) on your laptop or any management host where you're going to run it. 
 
 ## Usage
 
@@ -22,14 +22,18 @@ Ansible directory contains two playbooks:
 
 You need to prepare inventory for these playbooks, and add your host(s) to [trex] group. 
 
-Run it:
+Run it like that:
 
     ansible-playbook -i inventory/example-single/ system.yml
     ansible-playbook -i inventory/example-single/ trex.yml
 
+You can also specify parts of playbook with tags (run with --list-tags to see available tags). 
+
+To force recreation of TRex containers add `-e -e trex_force_recreate=true` in command line. 
+
 ## Configuration
 
-You can customize `ansible/group_vars/all.yml` file in your inventory dir, or create host vars per host. 
+You can customize `ansible/inventory/*/group_vars/all.yml` file in your inventory dir, or create host vars per host. See attached examples. 
 
 Supported parameters:
 
