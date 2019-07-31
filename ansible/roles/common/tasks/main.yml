@@ -1,6 +1,6 @@
 ---
 
-- name: include distro specific setup
+- name: include distribution specific setup
   include_tasks: "{{lookup('first_found', params)}}"
   vars:
     params:

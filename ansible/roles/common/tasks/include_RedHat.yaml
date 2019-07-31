@@ -3,13 +3,12 @@
 - name: install kernel headers on RedHat based systems
   yum:
     name: kernel-devel-{{ ansible_kernel }}
-    update_cache: yes
+    state: present
 
 - name: install epel release
   yum:
     name: epel-release
     state: present
-    update_cache: yes
     
 - name: install python2-pip
   yum:

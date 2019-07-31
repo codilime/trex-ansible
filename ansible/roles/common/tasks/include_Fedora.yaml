@@ -5,7 +5,7 @@
     name: 
       - kernel-devel-{{ ansible_kernel }}
       - kernel-modules-{{ ansible_kernel }}
-    update_cache: yes
+    state: present
 
 - name: install python2-pip
   yum:
