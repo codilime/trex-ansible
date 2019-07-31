@@ -1,0 +1,8 @@
+trex-ubuntu
+trex-centos
+trex-fedora ansible_python_interpreter=python3
+
+[trex]
+trex-ubuntu
+trex-centos
+trex-fedora

@@ -1,0 +1,7 @@
+---
+
+- name: install kernel headers on RedHat based systems
+  yum:
+    name: kernel-devel-{{ ansible_kernel }}
+    update_cache: yes
+

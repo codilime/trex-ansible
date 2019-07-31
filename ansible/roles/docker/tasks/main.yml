@@ -17,7 +17,13 @@
     - restart docker
 
 - name: include docker packages installation
-  include_tasks: packages_{{ ansible_os_family }}.yaml
+  include_tasks: "{{lookup('first_found', params)}}"
+  vars:
+    params:
+      files:
+        - "packages_{{ ansible_distribution }}.yaml"
+        - "packages_{{ ansible_os_family }}.yaml"
+      paths: [ '.' ]
 
 - name: enable docker service
   systemd:

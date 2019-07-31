@@ -1,0 +1,8 @@
+---
+
+- name: install kernel headers and modules on Fedora
+  yum:
+    name: 
+      - kernel-devel-{{ ansible_kernel }}
+      - kernel-modules-{{ ansible_kernel }}
+    update_cache: yes
