@@ -35,4 +35,4 @@ Supported parameters:
 
 * trex_docker_image - trex docker image registry, defaults to codilimecom/trex:latest. 
 * trex_dpdk_pci_interfaces - this list of interfaces for machine to be set up by DPDK. It takes the form of PCI ids, like '00:06.0' or '00:07.0'. 
-
+* trex_docker_published_ports - list of published ports. Defaults to 4500, 4501 and 4507 on 127.0.0.1. Takes form of list of IP:hostport:containerport, for example "[ '0.0.0.0:4500:4500', '0.0.0.0:4501:4501' ]". 
