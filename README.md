@@ -24,8 +24,8 @@ You need to prepare inventory for these playbooks, and add your host(s) to [trex
 
 Run it:
 
-    ansible-playbook -i inventory/example/ system.yml
-    ansible-playbook -i inventory/example/ trex.yml
+    ansible-playbook -i inventory/example-single/ system.yml
+    ansible-playbook -i inventory/example-single/ trex.yml
 
 ## Configuration
 
