@@ -10,8 +10,8 @@ Multiple machines may be set up with installer, although we don't use them for n
 
 ## Requirements
 
-* Modern Linux Ubuntu or CentOS bare metal or virtual machine with Docker daemon, (Docker SDK)[https://docker-py.readthedocs.io/en/stable/] and kernel headers properly installed, 
-* (Ansible)[https://www.ansible.com/] (at least 2.8) on your laptop or any management host where you're going to run it. 
+* Modern Linux Ubuntu or CentOS bare metal or virtual machine with Docker daemon, [Docker SDK](https://docker-py.readthedocs.io/en/stable/) and kernel headers properly installed, 
+* [Ansible](https://www.ansible.com/) 2.8 or newer on your laptop or any management host where you're going to run it. 
 
 ## Usage
 
@@ -22,11 +22,11 @@ Ansible directory contains two playbooks:
   * Docker daemon and python API library
 * trex.yml - downloads and launches Docker container with TRex in interactive mode. 
 
-IMPORTANT: Running system.yml playbook may *damage* your docker installation if you already have one). Run it on fresh systems only. The same applies to setup-all.yml playbook. 
+*IMPORTANT:* Running system.yml playbook may *damage* your docker installation, if you already have one. Run it on fresh systems only. The same applies to setup-all.yml playbook, which includes the same roles.
 
 To run Ansible playbooks, you need to prepare inventory and add your host(s) to [trex] group. 
 
-Run it like that:
+Run it in a standard way:
 
     ansible-playbook -i inventory/example-single/ system.yml
     ansible-playbook -i inventory/example-single/ trex.yml
