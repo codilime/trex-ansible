@@ -17,7 +17,7 @@
     - restart docker
 
 - name: include docker packages installation
-  include_tasks: "{{lookup('first_found', params)}}"
+  include_tasks: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
