@@ -9,16 +9,15 @@
   yum:
     name: epel-release
     state: present
-    
+
 - name: install python2-pip
   yum:
     name: python2-pip
     state: present
   when: ansible_python_version is version('3', '<')
 
-- name: install python34-pip                                                                           
+- name: install python34-pip
   yum:
     name: python34-pip
     state: present
   when: ansible_python_version is version('3', '>=')
-    
