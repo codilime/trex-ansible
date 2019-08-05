@@ -1,0 +1,17 @@
+---
+
+- set_fact:
+    vm_name: "trex-{{ vm+1 }}"
+
+- name: check if base image volume already exists
+  command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ vm_name }}"
+  register: vm_vol_info
+  failed_when: false
+  changed_when: false
+
+- block:
+
+  - name: create {{ vm_name }} volume
+    command: "virsh vol-clone --pool {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ vm_name }}"
+
+  when: vm_vol_info != 0

@@ -1,59 +1,9 @@
----
 
-- name: prepare ansible storage pool directory
-  file:
-    path: "{{ libvirt_pool_dir }}"
-    state: directory
+- set_fact:
+    vm_sequence: "{{ range(1, trex_vm_count+1) | list }}"
 
-- name: create ansible storage pool
-  virt_pool:
-    command: define
-    name: "{{ libvirt_pool_name }}"
-    xml: '{{ lookup("template", "pool-dir.xml.j2") }}'
-
-- name: start ansible storage pool
-  virt_pool:
-    state: active
-    autostart: yes
-    name: "{{ libvirt_pool_name }}"
-
-- name: enable storage pool autostart 
-  virt_pool:
-    autostart: yes
-    name: "{{ libvirt_pool_name }}"
-
-- name: check if base image volume already exists
-  command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ libvirt_vol_name }}"
-  register: vol_info
-  failed_when: false
-  changed_when: false
-
-- block:
-
-  - name: create temporary download file
-    tempfile:
-      state: file
-    register: dl
-  
-  - debug:
-      msg: "{{ dl.path }}"
-  
-  - name: download ubuntu cloud qcow image
-    get_url:
-      url: "{{ libvirt_image_url }}"
-      dest: "{{ dl.path }}"
-      force: yes
-
-  - name: create volume in new storage pool 
-    command: "virsh vol-create-as {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ libvirt_vol_size }} --format qcow2"
-
-  - name: upload image to storage pool 
-    command: "virsh vol-upload --pool  {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ dl.path }}"
-
-  - name: remove temporary download file
-    file:
-      path: "{{ dl.path }}"
-      state: absent
-    when: dl.path is defined
-
-  when: vol_info.rc != 0
+- include_tasks: pool.yml
+- include_tasks: start_vm.yml
+  loop: "{{ vm_sequence }}"
+  loop_control:
+    index_var: vm
