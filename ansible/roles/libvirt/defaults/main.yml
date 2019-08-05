@@ -1,0 +1,9 @@
+---
+
+libvirt_pool_name: trex-ansible
+libvirt_vol_name: ubuntu-cloud-18.04
+libvirt_vol_size: 10G
+
+libvirt_image_url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+libvirt_pool_dir: "/var/lib/{{ libvirt_pool_name }}/libvirt/images/"
+

@@ -1,0 +1,7 @@
+---
+
+- name: Launch TRex libvirt virtual machines
+  hosts: localhost
+  become: false
+  roles:
+    - libvirt
