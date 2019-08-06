@@ -32,11 +32,6 @@
     chdir: "{{ libvirt_pool_dir }}"
   when: nocloud is changed
 
-
-
-
-
-
 - name: define {{ vm_name }} from xml
   virt:
     command: define
@@ -47,7 +42,7 @@
     name: "{{ vm_name }}"
     state: running
 
-- name: wait until {{ vm_name }} starts
+- name: wait until {{ vm_name }} starts and gets ip address
   shell: >
     virsh domifaddr trex-1 --source arp
   changed_when: false
@@ -72,3 +67,11 @@
     port: 22
     host: '{{ vm_ip }}'
     search_regex: OpenSSH
+
+- name: add host to new inventory libvirt_vms
+  add_host:
+    hostname: '{{ vm_name }}'
+    ansible_host: '{{ vm_ip }}'
+    ansible_port: 22
+    ansible_user: ubuntu
+    groups: [ libvirt_vms ]
