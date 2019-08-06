@@ -1,17 +1,25 @@
 ---
 
-- set_fact:
+- name: set vm name fact to trex-{{ vm+1 }}
+  set_fact:
     vm_name: "trex-{{ vm+1 }}"
 
-- name: check if base image volume already exists
+- name: check if base image volume for {{ vm_name }} already exists
   command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ vm_name }}"
   register: vm_vol_info
   failed_when: false
   changed_when: false
 
-- block:
+- name: create {{ vm_name }} volume if does not exist
+  command: "virsh vol-clone --pool {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ vm_name }}"
+  when: vm_vol_info.rc != 0
 
-  - name: create {{ vm_name }} volume
-    command: "virsh vol-clone --pool {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ vm_name }}"
+- name: define {{ vm_name }} from xml
+  virt:
+    command: define
+    xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
 
-  when: vm_vol_info != 0
+- name: start {{ vm_name }}
+  virt:
+    name: "{{ vm_name }}"
+    state: running    
