@@ -2,13 +2,12 @@
 
 - name: Gather facts always, regardless of tags
   hosts: libvirt
-  become: false
   roles:
     - { role: checks, tags: [ checks ] }
   tags: [ always ]
 
 - name: Launch TRex libvirt virtual machines
   hosts: libvirt
-  become: false
+  become: true
   roles:
     - libvirt

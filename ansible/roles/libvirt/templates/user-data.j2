@@ -1,0 +1,13 @@
+#cloud-config
+
+hostname: {{ vm_name }}
+users:
+  - default
+  - name: ubuntu
+    ssh-authorized-keys:
+{% for key in libvirt_ssh_authorized_keys %}
+      - {{ key }}
+{% endfor %}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo
+    shell: /bin/bash

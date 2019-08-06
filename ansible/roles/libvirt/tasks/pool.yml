@@ -27,6 +27,7 @@
   register: vol_info
   failed_when: false
   changed_when: false
+  check_mode: false
 
 - block:
 
@@ -34,9 +35,6 @@
     tempfile:
       state: file
     register: dl
-  
-  - debug:
-      msg: "{{ dl.path }}"
   
   - name: download ubuntu cloud qcow image
     get_url:
@@ -57,3 +55,4 @@
     when: dl.path is defined
 
   when: vol_info.rc != 0
+

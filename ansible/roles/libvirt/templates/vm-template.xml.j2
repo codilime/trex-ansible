@@ -24,9 +24,15 @@
     <emulator>/usr/bin/kvm-spice</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='{{ libvirt_pool_dir }}/{{ vm_name }}'/>
+      <source file='{{ libvirt_pool_dir }}/{{ vm_name }}-disk.qcow'/>
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='{{ libvirt_pool_dir }}/{{ vm_name }}-nocloud.iso'/>
+      <target dev='hdb' bus='ide'/>
+      <readonly/>
     </disk>
     <controller type='usb' index='0' model='piix3-uhci'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
