@@ -5,7 +5,7 @@
 
 - include_tasks: pool.yml
 
-#- include_tasks: network.yml
+- include_tasks: network.yml
 
 - include_tasks: start_vm.yml
   loop: "{{ vm_sequence }}"

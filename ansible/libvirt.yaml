@@ -16,11 +16,6 @@
 - name: Set up newly created VMs
   hosts: libvirt_vms
   become: true
-  tasks:
-    - command: hostname
-      register: debug
-    - debug:
-        msg: "{{ debug.stdout }}"
   roles:
     - { role: common, tags: [ common ] }
     #- { role: docker, tags: [ docker ] }
