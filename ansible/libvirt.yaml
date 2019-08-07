@@ -23,4 +23,4 @@
         msg: "{{ debug.stdout }}"
   roles:
     - { role: common, tags: [ common ] }
-    - { role: docker, tags: [ docker ] }
+    #- { role: docker, tags: [ docker ] }

@@ -1,8 +1,7 @@
 <domain type='kvm'>
   <name>{{ vm_name }}</name>
-  <memory unit='KiB'>16777216</memory>
-  <currentMemory unit='KiB'>16777216</currentMemory>
-  <vcpu placement='static'>4</vcpu>
+  <memory unit='MiB'>{{ libvirt_guest_memory_mib }}</memory>
+  <vcpu placement='static'>{{ libvirt_guest_cpu_count }}</vcpu>
   <os>
     <type arch='x86_64' machine='pc-i440fx-bionic'>hvm</type>
     <boot dev='hd'/>
@@ -66,4 +65,3 @@
     </memballoon>
   </devices>
 </domain>
-

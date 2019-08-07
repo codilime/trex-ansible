@@ -7,4 +7,7 @@ libvirt_vol_size: 10G
 libvirt_image_url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
 libvirt_pool_dir: "/var/lib/{{ libvirt_pool_name }}/libvirt/images/"
 
+libvirt_guest_memory_mib: 4096
+libvirt_guest_cpu_count: 4
+
 trex_vm_count: 1
