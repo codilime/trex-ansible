@@ -55,7 +55,7 @@
     state: running
 
 - name: wait until {{ vm_name }} starts and gets ip address
-  command: virsh domifaddr {{ vm_name }} --source arp
+  command: virsh domifaddr {{ vm_name }}
   changed_when: false
   register: output
   until: output.stdout.find('ipv4') != -1
