@@ -21,7 +21,7 @@ Multiple machines may be set up with installer, although we don't use them for n
 
 Ansible directory contains two playbooks:
 
-* libvirt.yml - launches TRex virtual machines based on Ubuntu cloud image on libvirt. For now it is controlled by `libvirt_trex_vm_count` variable which say how many instances are launched on each libvirt host. It defaults to 1. You also need to provide `libvirt_ssh_authorized_keys`, which is a list of SSH authorized keys to add to newly added VMs. You won't log in to them without it. 
+* libvirt.yml - launches TRex virtual machines based on Ubuntu cloud image on libvirt. For now it is controlled by `libvirt_trex_vm_count` variable which say how many instances are launched on each libvirt host (it defaults to 1). You also need to provide `libvirt_ssh_authorized_keys`, which is a list of SSH authorized keys to add to newly added VMs. You won't log in to them without it.
 * system.yml - Sets up system dependiences:
   * kernel headers, modules, python pip,
   * Docker daemon and python API library
@@ -33,7 +33,7 @@ To run Ansible playbooks, you need to prepare inventory and add your host(s) to 
 
 Run it in a standard way:
 
-    ansible-playbook -i inventory/example/ libvirt.yml
+    ansible-playbook -i inventory/example/ libvirt.yml -e @extra/vars.yml
     ansible-playbook -i inventory/example/ system.yml
     ansible-playbook -i inventory/example/ trex.yml
 

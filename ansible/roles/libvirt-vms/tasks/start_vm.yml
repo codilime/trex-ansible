@@ -49,10 +49,8 @@
     state: running
 
 - name: wait until {{ vm_name }} starts and gets ip address
-  shell: >
-    virsh domifaddr trex-1 --source arp
+  command: virsh domifaddr {{ vm_name }} --source arp
   changed_when: false
-
   register: output
   until: output.stdout.find('ipv4') != -1
   delay: 3
@@ -60,7 +58,7 @@
 
 - name: get {{ vm_name }} ip address
   shell: >
-    virsh domifaddr trex-1 | grep ipv4 | head -n1 |awk '{ print $4 }' | cut -d/ -f1
+    virsh domifaddr {{ vm_name }} | grep ipv4 | head -n1 |awk '{ print $4 }' | cut -d/ -f1
   register: domifaddr
   changed_when: false
 
