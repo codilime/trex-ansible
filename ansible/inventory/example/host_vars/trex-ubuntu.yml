@@ -5,9 +5,8 @@
 # PCI ids taken from `lspci` output
 trex_dpdk_pci_interfaces:
   - id: '00:06.0'
-    default_gw: 10.100.17.2
-    ip: 10.100.17.3
+    default_gw: 10.100.17.3
+    ip: 10.100.17.2
   - id: 'dummy'
-    default_gw: 1.1.1.1
-    ip: 2.2.2.2
-
+    default_gw: 2.2.2.2
+    ip: 1.1.1.1

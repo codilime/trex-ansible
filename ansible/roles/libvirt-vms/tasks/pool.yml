@@ -17,7 +17,7 @@
     autostart: yes
     name: "{{ libvirt_pool_name }}"
 
-- name: enable storage pool autostart 
+- name: enable storage pool autostart
   virt_pool:
     autostart: yes
     name: "{{ libvirt_pool_name }}"
@@ -35,17 +35,17 @@
     tempfile:
       state: file
     register: dl
-  
+
   - name: download ubuntu cloud qcow image
     get_url:
       url: "{{ libvirt_image_url }}"
       dest: "{{ dl.path }}"
       force: yes
 
-  - name: create volume in new storage pool 
+  - name: create volume in new storage pool
     command: "virsh vol-create-as {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ libvirt_vol_size }} --format qcow2"
 
-  - name: upload image to storage pool 
+  - name: upload image to storage pool
     command: "virsh vol-upload --pool  {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ dl.path }}"
 
   - name: remove temporary download file

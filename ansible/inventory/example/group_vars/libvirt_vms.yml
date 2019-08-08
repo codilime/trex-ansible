@@ -1,0 +1,6 @@
+# PCI ids taken from `lspci` output
+trex_dpdk_pci_interfaces:
+  - id: '01:02.0'
+    dest_mac: '02:20:e6:75:26:34'
+  - id: 'dummy'
+    dest_mac: '22:22:22:22:22:22'

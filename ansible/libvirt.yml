@@ -10,7 +10,7 @@
   hosts: libvirt
   become: true
   roles:
-    - { role: common, tags: [ common ] }    
-    - { role: libvirt, tags: [ libvirt ] }
+    - { role: common, tags: [ common ] }
+    - { role: libvirt-vms, tags: [ libvirt-vms ] }
   tags: [ always ]
 

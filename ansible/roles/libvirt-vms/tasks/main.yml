@@ -1,7 +1,8 @@
 ---
 
-- set_fact:
-    vm_sequence: "{{ range(1, trex_vm_count+1) | list }}"
+- name: generate sequence for launching vms
+  set_fact:
+    vm_sequence: "{{ range(1, libvirt_trex_vm_count+1) | list }}"
 
 - include_tasks: pool.yml
 

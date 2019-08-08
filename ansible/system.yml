@@ -1,7 +1,7 @@
 ---
 
 - name: Gather facts always, regardless of tags
-  hosts: 
+  hosts:
    - trex
   become: yes
   roles:
@@ -9,7 +9,7 @@
   tags: [ always ]
 
 - name: Prepare & install system dependencies
-  hosts: 
+  hosts:
     - trex
   become: yes
   roles:
@@ -17,9 +17,9 @@
   tags: [ system ]
 
 - name: Install docker on TRex machines
-  hosts: 
+  hosts:
     - trex
   become: yes
   roles:
     - { role: docker, tags: [ docker ] }
-  tags: [ system ] 
+  tags: [ system ]

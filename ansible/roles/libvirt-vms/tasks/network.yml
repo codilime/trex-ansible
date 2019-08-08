@@ -9,8 +9,9 @@
 - name: start libvirt network
   virt_net:
     name: "{{ libvirt_network_name }}"
-    state: active 
+    state: active
 
-- virt_net:
+- name: autostart libvirt network
+  virt_net:
     name: "{{ libvirt_network_name }}"
     autostart: yes

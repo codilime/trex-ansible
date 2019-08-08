@@ -1,4 +1,5 @@
 ---
+# That's quick & dirty for now, I know.
 
 - name: set vm name fact to trex-{{ vm+1 }}
   set_fact:
@@ -16,10 +17,18 @@
     command: undefine
   ignore_errors: true
 
+- name: check if base image volume for {{ vm_name }} already exists
+  command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ vm_name }}-disk.qcow"
+  register: vm_vol_info
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
 - name: delete {{ vm_name }} disk volume
   command:
     virsh vol-delete --pool {{ libvirt_pool_name }} {{ vm_name }}-disk.qcow
   ignore_errors: true
+  when: vm_vol_info.rc == 0
 
 - name: remove {{ vm_name }} meta-data, user-data and nocloud iso
   file:

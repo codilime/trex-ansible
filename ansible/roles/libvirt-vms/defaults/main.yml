@@ -14,4 +14,4 @@ libvirt_network_name: trex-ansible
 libvirt_network_bridge: trexbr0
 
 # how many VMs to launch on single libvirt host
-trex_vm_count: 1
+libvirt_trex_vm_count: 1
