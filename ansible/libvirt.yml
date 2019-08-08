@@ -10,12 +10,7 @@
   hosts: libvirt
   become: true
   roles:
+    - { role: common, tags: [ common ] }    
     - { role: libvirt, tags: [ libvirt ] }
   tags: [ always ]
 
-- name: Set up newly created VMs
-  hosts: libvirt_vms
-  become: true
-  roles:
-    - { role: common, tags: [ common ] }
-    #- { role: docker, tags: [ docker ] }

@@ -68,10 +68,10 @@
     host: '{{ vm_ip }}'
     search_regex: OpenSSH
 
-- name: add host to new inventory libvirt_vms
+- name: add host to trex inventory group
   add_host:
     hostname: '{{ vm_name }}'
     ansible_host: '{{ vm_ip }}'
     ansible_port: 22
     ansible_user: ubuntu
-    groups: [ libvirt_vms ]
+    groups: [ libvirt_vms, trex ]

@@ -1,23 +1,6 @@
 ---
 
-- name: Gather facts always, regardless of tags
-  hosts: trex
-  become: yes
-  roles:
-    - { role: checks, tags: [ checks ] }
-  tags: [ always ]
+- include: libvirt.yml
+- include: system.yml
+- include: trex.yml
 
-- name: Prepare & install system dependencies
-  hosts: trex
-  become: yes
-  roles:
-    - { role: common, tags: [ common ] }
-    - { role: docker, tags: [ docker ] }
-  tags: [ system ]
-
-- name: Setup T-Rex Traffic Generator
-  hosts: trex
-  become: yes
-  roles:
-    - { role: trex,   tags: [ trex ] }
-  tags: [ app ]
