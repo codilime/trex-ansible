@@ -21,6 +21,12 @@
     chdir: "{{ libvirt_pool_dir }}"
   when: vm_vol_info.rc != 0
 
+- name: find local public ssh key and register it's contents
+  slurp:
+    src: "{{ lookup('first_found', ssh_local_public_keys_locations) }}"
+  register: ssh_key
+  delegate_to: localhost
+
 - name: template {{ vm_name }} meta-data and user-data for nocloud iso
   template:
     src: "{{ data_file }}.j2"
