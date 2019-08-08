@@ -7,7 +7,7 @@
     force_source: yes
     source: pull
 
-- name: template trex configuration
+- name: generation trex configuration
   template:
     src: trex_cfg.yaml.j2
     dest: /etc/trex_cfg.yaml

@@ -18,7 +18,10 @@
 
 - name: install docker
   yum:
-    name: [ docker-ce, docker-ce-cli, containerd.io ]
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
     state: present
     update_cache: yes
 
