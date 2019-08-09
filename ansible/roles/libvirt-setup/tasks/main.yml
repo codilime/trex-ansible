@@ -6,6 +6,7 @@
       - qemu-kvm
       - libvirt-daemon
       - python-libvirt
+      - python-lxml
       - bridge-utils
       - libvirt-clients
       - cloud-image-utils
