@@ -1,0 +1,32 @@
+---
+
+- name: install libvirt on debian systems
+  apt:
+    name:
+      - qemu-kvm
+      - libvirt-daemon
+      - python-libvirt
+      - bridge-utils
+      - libvirt-clients
+      - cloud-image-utils
+      - libvirt-daemon-system      
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: install libvirt on redhat systems
+  yum:
+    name:
+      - qemu-kvm
+      - libvirt
+      - libvirt-python
+      - bridge-utils      
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: enable libvirtd daemon
+  systemd:
+    name: libvirtd
+    daemon_reload: yes
+    enabled: yes
+    state: started
+    masked: no
