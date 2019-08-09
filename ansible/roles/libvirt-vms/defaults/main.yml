@@ -1,0 +1,22 @@
+---
+
+libvirt_pool_name: trex-ansible
+libvirt_vol_name: bionic-server-cloudimg-amd64.img
+libvirt_vol_size: 10G
+
+libvirt_image_url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+libvirt_pool_dir: "/var/lib/{{ libvirt_pool_name }}/libvirt/images/"
+
+libvirt_guest_memory_mib: 4096
+libvirt_guest_cpu_count: 4
+
+libvirt_network_name: trex-ansible
+libvirt_network_bridge: trexbr0
+
+# how many VMs to launch on single libvirt host
+libvirt_trex_vm_count: 1
+
+
+ssh_local_public_keys_locations:
+  - "{{ lookup('env','HOME') + '/.ssh/id_ed25519.pub' }}"
+  - "{{ lookup('env','HOME') + '/.ssh/id_rsa.pub' }}"

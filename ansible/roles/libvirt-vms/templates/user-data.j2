@@ -1,0 +1,11 @@
+#cloud-config
+
+hostname: {{ vm_name }}
+users:
+  - default
+  - name: ubuntu
+    ssh-authorized-keys:
+      - "{{ ssh_key.content | b64decode | trim }}"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo
+    shell: /bin/bash

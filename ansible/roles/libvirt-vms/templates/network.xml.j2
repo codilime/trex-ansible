@@ -1,0 +1,5 @@
+<network>
+  <name>{{ libvirt_network_name }}</name>
+  <bridge name='{{ libvirt_network_bridge }}' stp='off' delay='0'/>
+  <mac address='{{ "12:34" | random_mac }}'/>
+</network>

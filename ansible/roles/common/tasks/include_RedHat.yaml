@@ -21,3 +21,8 @@
     name: python34-pip
     state: present
   when: ansible_python_version is version('3', '>=')
+
+- name: install cloud-image-utils 
+  yum:
+    name: cloud-utils
+    state: present

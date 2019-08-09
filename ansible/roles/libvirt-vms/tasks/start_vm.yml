@@ -1,0 +1,88 @@
+---
+
+- name: set vm name fact to trex-{{ vm+1 }}
+  set_fact:
+    vm_name: "trex-{{ vm+1 }}"
+
+- name: check if base image volume for {{ vm_name }} already exists
+  command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ vm_name }}-disk.qcow"
+  register: vm_vol_info
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
+- name: create {{ vm_name }} volume if does not exist
+  command: "virsh vol-clone --pool {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ vm_name }}-disk.qcow"
+  when: vm_vol_info.rc != 0
+
+- name: resize {{ vm_name }} volume if didn't exist
+  command: "qemu-img resize {{ vm_name }}-disk.qcow {{ libvirt_vol_size }}"
+  args:
+    chdir: "{{ libvirt_pool_dir }}"
+  when: vm_vol_info.rc != 0
+
+- name: find local public ssh key and register it's contents
+  slurp:
+    src: "{{ lookup('first_found', ssh_local_public_keys_locations) }}"
+  register: ssh_key
+  delegate_to: localhost
+
+- name: template {{ vm_name }} meta-data and user-data for nocloud iso
+  template:
+    src: "{{ data_file }}.j2"
+    dest: "{{ libvirt_pool_dir }}/{{ vm_name }}-{{ data_file }}.txt"
+  loop:
+    - user-data
+    - meta-data
+  loop_control:
+    loop_var: data_file
+  register: nocloud
+
+- name: generate nocloud-iso
+  command: cloud-localds {{ vm_name }}-nocloud.iso {{ vm_name }}-user-data.txt {{ vm_name }}-meta-data.txt
+  args:
+    chdir: "{{ libvirt_pool_dir }}"
+  when: nocloud is changed
+
+- name: define {{ vm_name }} from xml
+  virt:
+    command: define
+    xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
+
+- name: start {{ vm_name }}
+  virt:
+    name: "{{ vm_name }}"
+    state: running
+
+- name: wait until {{ vm_name }} starts and gets ip address
+  command: virsh domifaddr {{ vm_name }}
+  changed_when: false
+  register: output
+  until: output.stdout.find('ipv4') != -1
+  delay: 3
+  retries: 60
+
+- name: get {{ vm_name }} ip address
+  shell: >
+    virsh domifaddr {{ vm_name }} | grep ipv4 | head -n1 |awk '{ print $4 }' | cut -d/ -f1
+  register: domifaddr
+  changed_when: false
+
+- name: set {{ vm_name }} ip address fact
+  set_fact:
+    vm_ip: "{{ domifaddr.stdout }}"
+
+- name: wait for {{ vm_name }} ssh
+  wait_for:
+    port: 22
+    host: '{{ vm_ip }}'
+    search_regex: OpenSSH
+
+- name: add host to trex inventory group
+  add_host:
+    hostname: '{{ vm_name }}'
+    ansible_host: '{{ vm_ip }}'
+    ansible_port: 22
+    ansible_user: ubuntu
+    groups: [ libvirt_vms, trex ]
+  changed_when: false

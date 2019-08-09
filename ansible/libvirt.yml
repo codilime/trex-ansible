@@ -1,0 +1,28 @@
+---
+
+- name: Gather facts always, regardless of tags
+  hosts: libvirt
+  roles:
+    - { role: checks, tags: [ checks ] }
+  tags: [ always ]
+
+- name: Setup libvirt machines and install libvirt
+  hosts: libvirt
+  become: true
+  roles:
+    - {
+        role: libvirt-setup,
+        tags: [ libvirt-setup ],
+        when: enable_libvirt_setup == True
+      }
+  vars:
+    enable_libvirt_setup: False
+  tags: [ libvirt-setup, libvirt ]
+
+- name: Launch TRex libvirt virtual machines
+  hosts: libvirt
+  become: true
+  roles:
+    - { role: libvirt-vms, tags: [ libvirt-vms ] }
+  tags: [ libvirt-vms, libvirt ]
+

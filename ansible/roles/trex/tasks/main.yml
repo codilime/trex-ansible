@@ -12,7 +12,7 @@
     src: trex_cfg.yaml.j2
     dest: /etc/trex_cfg.yaml
 
-  # we must have properly installed kernel-headers in /usr/src/ and linked in 
+  # we must have properly installed kernel-headers in /usr/src/ and linked in
   # /lib/modules/`uname -r`/build
 - name: start fully privileged container with TRex in interactive mode
   docker_container:

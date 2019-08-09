@@ -1,7 +1,0 @@
-trex-1 ansible_host=10.1.0.11 ansible_user=vagrant
-
-[trex]
-trex-1
-
-[all:vars]
-ansible_ssh_private_key_file=/home/example/.ssh/aws.pem
