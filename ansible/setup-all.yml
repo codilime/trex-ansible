@@ -1,5 +1,0 @@
----
-
-- import_playbook: libvirt.yml
-- import_playbook: trex.yml
-
