@@ -1,7 +1,7 @@
 ---
 
 - name: Gather facts always, regardless of tags
-  hosts: libvirt
+  hosts: all
   roles:
     - { role: checks, tags: [ checks ] }
   tags: [ always ]
@@ -17,12 +17,18 @@
       }
   vars:
     enable_libvirt_setup: False
-  tags: [ libvirt-setup, libvirt ]
+  tags: [ libvirt ]
 
 - name: Launch TRex libvirt virtual machines
   hosts: libvirt
   become: true
   roles:
     - { role: libvirt-vms, tags: [ libvirt-vms ] }
-  tags: [ libvirt-vms, libvirt ]
+  tags: [ libvirt ]
 
+- name: Setup T-Rex Traffic Generator
+  hosts: trex
+  become: yes
+  roles:
+    - { role: trex,   tags: [ trex ] }
+  tags: [ app ]
