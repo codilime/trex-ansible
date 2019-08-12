@@ -1,6 +1,6 @@
 ---
 
-- name: install kernel headers on Debian based systems
+- name: install kernel headers on debian based systems
   apt:
     name: linux-headers-{{ ansible_kernel }}
     state: present
@@ -8,21 +8,18 @@
     install_recommends: no
     cache_valid_time: 3600
 
-- name: install python-pip
+- name: install build-essential meta package
   apt:
-    name: [ python-pip, python-setuptools ]
+    name: build-essential
     state: present
     update_cache: yes
     install_recommends: no
     cache_valid_time: 3600
-  when: ansible_python_version is version('3', '<')
 
-- name: install python3-pip
+- name: install python3-distutils
   apt:
-    name: [ python3-pip, python3-setuptools ]
+    name: python3-distutils
     state: present
     update_cache: yes
     install_recommends: no
     cache_valid_time: 3600
-  when: ansible_python_version is version('3', '>=')
-
