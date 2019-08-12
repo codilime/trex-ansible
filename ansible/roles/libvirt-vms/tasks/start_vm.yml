@@ -25,6 +25,7 @@
   slurp:
     src: "{{ lookup('first_found', ssh_local_public_keys_locations) }}"
   register: ssh_key
+  become: false
   delegate_to: localhost
 
 - name: template {{ vm_name }} meta-data and user-data for nocloud iso

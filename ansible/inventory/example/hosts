@@ -1,13 +1,15 @@
 trex-ubuntu
-#trex-centos
-#trex-debian
-#trex-fedora ansible_python_interpreter=python3
+trex-centos
+trex-debian
+trex-fedora ansible_python_interpreter=python3
 
 [trex]
-trex-ubuntu
+#trex-ubuntu
 #trex-centos
-#trex-fedora
-#trex-debian
+trex-fedora
+trex-debian
 
 [libvirt]
-localhost ansible_connection=local
+#localhost ansible_connection=local
+trex-ubuntu
+trex-centos
