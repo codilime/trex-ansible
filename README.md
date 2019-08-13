@@ -10,42 +10,34 @@ In the world of high-performance network testing we have some good commercial, p
 
 ## Description
 
-This repo includes Ansible code to setup/download/install [TRex Traffic Generator](https://trex-tgn.cisco.com). It uses custom Docker image, built on top of CentOS. It should run on modern Ubuntu, CentOS, Fedora (however in the case of Fedora - you may need to enforce `ansible_python_interpreter=python3` and tune or disable SELinux). It will not work on Debian.
-
-Bear in mind that running TRex in docker container requires root privileges due to fact that it needs to compile and insert DPDK module (thus kernel headers must exist in /usr/src of host). It also needs configure or replace existing network device drivers. Thus, it's runs privileged and with all Linux CAPs included. You're warned now.
-
-Compiling modules in docker with one toolchain (CentOS in this case) against underlying kernel build with presumably another compiler is problematic. And because of that it seems like we need to rewrite Ansible code and forget about Docker. That will probably happen in future versions.
+This repo includes Ansible code to setup/download/install [TRex Traffic Generator](https://trex-tgn.cisco.com). It should work on modern Ubuntu, CentOS, Fedora (however in case of Fedora - you may need to enforce `ansible_python_interpreter=python3` and tune or disable SELinux), but currently we're going to treat seriously only Ubuntu (due to early stage and lack of time).
 
 Multiple machines may be set up with installer, starting TRex in interactive mode with exposed API on port 4500/4501. Installer also supports running multiple TRex instances on libvirt hosts. 
 
 ## Requirements
 
-* Modern Linux Ubuntu, Fedora or CentOS bare metal or virtual machine with Docker daemon, [Docker SDK](https://docker-py.readthedocs.io/en/stable/) and kernel headers properly installed,
-* [Ansible](https://www.ansible.com/) 2.8 or newer on your laptop or any management host where you're going to run it.
+* Modern Linux Ubuntu (prefferable), Fedora or CentOS bare metal or virtual machine,
+* [Ansible](https://www.ansible.com/) 2.8 or newer on your laptop or any management host where you're  going to run it.
 
 ## Usage
 
-Ansible directory contains two playbooks:
 
-* libvirt.yml - launches TRex virtual machines based on Ubuntu cloud image on libvirt. For now, it is controlled by `libvirt_trex_vm_count` variable which say how many instances are launched on each libvirt host (it defaults to 1). Libvirt with python-libvirt on target machines is required for this playbook to work. This playbook can also set up libvirt on machine, with optional `-e { enable_libvirt_setup: True }' parameter. 
-* system.yml - Sets up system dependiences:
-  * kernel headers, modules, python pip,
-  * Docker daemon and python API library
-* trex.yml - downloads and launches a Docker container with TRex in interactive mode.
+Ansible directory one single playbook with following plays:
 
-*IMPORTANT:* Running system.yml playbook may *damage* your docker installation, if you already have one. Run it on fresh systems only. The same applies to setup-all.yml playbook, which imports above playbooks.
+* Setup libvirt machines and install libvirt - this is optional and setting up libvirt host requires `-e '{ enable_libvirt_setup: True }'` - otherwise we assume that libvirt on host is configured and do    not touch that. 
+* Launch TRex libvirt virtual machines - launches TRex virtual machines based on Ubuntu cloud image on libvirt. For now it is controlled by `libvirt_trex_vm_count` variable which say how many instances are launched on each libvirt host (it defaults to 1). Libvirt with python-libvirt on target machines is    required for this playbook to work.
+* Setup T-Rex Traffic Generator - installs and runs TRex in interactive mode on all hosts in trex      group, including discovered VMs. 
 
 To run Ansible playbooks, you need to prepare inventory and add your host(s) to [trex] group.
 
 Run it in a standard way:
 
-    ansible-playbook -i inventory/example/ libvirt.yml -e @extra/vars.yml
-    ansible-playbook -i inventory/example/ system.yml
-    ansible-playbook -i inventory/example/ trex.yml
+    ansible-playbook -i inventory/example/ setup.yml -e  '{ cleanup_vms: False, enable_libvirt_setup:  True }'
 
-You can also specify parts of a playbook with tags (run with --list-tags to see available tags).
+You can also specify parts of playbook with tags (run with --list-tags to see available tags).
 
 To force recreation of TRex containers add `-e trex_force_recreate=true` in command line.
+
 
 ## Configuration
 
@@ -53,6 +45,4 @@ You can customize `ansible/inventory/*/group_vars/all.yml` file in your inventor
 
 Supported parameters:
 
-* `trex_docker_image` - trex docker image registry, defaults to codilimecom/trex:latest.
 * `trex_dpdk_pci_interfaces` - this list of interfaces for machine to be set up by DPDK. It takes the form of PCI ids, like '00:06.0' or '00:07.0'.
-* `trex_docker_published_ports` - list of published ports. Defaults to 4500, 4501 and 4507 on 127.0.0.1. Takes form of the list of IP:hostport:containerport, for example "[ '0.0.0.0:4500:4500', '0.0.0.0:4501:4501' ]".
