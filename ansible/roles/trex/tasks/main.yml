@@ -1,35 +1,54 @@
 ---
 
-- name: prefetch trex docker image
-  docker_image:
-    name: "{{ trex_docker_image }}"
-    state: present
-    force_source: yes
-    source: pull
+- name: include distribution specific setup
+  include_tasks: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "include_{{ ansible_distribution }}.yaml"
+        - "include_{{ ansible_os_family }}.yaml"
+      paths: [ '.' ]
 
-- name: generation trex configuration
+- name: create trex folder
+  file:
+    path: /opt/trex-v{{ trex_version }}
+    state: directory
+
+- name: grab trex release
+  get_url:
+    url: "{{ trex_release_url }}"
+    dest: /opt/trex-v{{ trex_version }}.tar.gz
+
+- name: unarchive trex release
+  unarchive:
+    src: /opt/trex-v{{ trex_version }}.tar.gz
+    dest: /opt/trex-v{{ trex_version }}
+    remote_src: yes
+    extra_opts: [ "--strip-components", "1" ]
+    creates: /opt/trex-v{{ trex_version}}/t-rex-64
+    owner: root
+    group: root
+
+- name: add /opt/trex symlink
+  file:
+    state: link
+    src: trex-v{{ trex_version }}
+    path: /opt/trex
+
+- name: generating trex configuration
   template:
     src: trex_cfg.yaml.j2
     dest: /etc/trex_cfg.yaml
 
-  # we must have properly installed kernel-headers in /usr/src/ and linked in
-  # /lib/modules/`uname -r`/build
-- name: start fully privileged container with TRex in interactive mode
-  docker_container:
-    name: "trex-server"
-    hostname: "{{ ansible_hostname }}-trex-i"
-    image: "{{ trex_docker_image }}"
-    capabilities: [ all ]
-    privileged: "yes"
-    recreate: "{{ trex_force_recreate | default('false') }}"
-    state: "{{ trex_force_state | default('started') }}"
-    restart_policy: "no"
-    init: "yes"
-    published_ports: "{{ trex_docker_published_ports }}"
-    volumes:
-      - /etc/trex_cfg.yaml:/etc/trex_cfg.yaml:ro
-      - /lib/modules:/lib/modules:ro
-      - /usr/src:/usr/src:ro
-      - /sys/bus/pci/devices:/sys/bus/pci/devices
-      - /sys/devices/system/node:/sys/devices/system/node
-      - /dev:/dev
+- name: generating trex systemd unit
+  template:
+    src: trex_service.j2
+    dest: /etc/systemd/system/trex.service
+    mode: 0644
+
+- name: enable and start trex
+  systemd:
+    name: trex
+    daemon_reload: yes
+    state: started
+    masked: no

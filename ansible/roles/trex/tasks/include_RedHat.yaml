@@ -1,0 +1,26 @@
+---
+
+- name: install kernel headers on redhat based systems
+  yum:
+    name: kernel-devel-{{ ansible_kernel }}
+    state: present
+
+# you may also need to tune or disable selinux on fedora
+- name: install kernel modules on fedora
+  yum:
+    name: kernel-modules-{{ ansible_kernel }}
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: install development tools on redhat based systems
+  yum:
+    name: "@Development tools"
+    state: present
+
+- name: install other needed tools
+  yum:
+    name:
+      - pciutils
+      - iproute
+      - net-tools
+      - vim

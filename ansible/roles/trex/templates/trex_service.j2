@@ -1,0 +1,12 @@
+[Unit]
+Description=Start TRex traffic generator in interactive mode
+
+[Service]
+Type=simple
+ExecStart=/opt/trex/t-rex-64 -i
+WorkingDirectory=/opt/trex
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target

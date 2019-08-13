@@ -1,17 +1,36 @@
 ---
 
-- name: install libvirt on debian systems
-  apt:
-    name:
-      - qemu-kvm
-      - libvirt-daemon
-      - python-libvirt
-      - python-lxml
-      - bridge-utils
-      - libvirt-clients
-      - cloud-image-utils
-      - libvirt-daemon-system      
-    state: present
+- block:
+
+  - name: install libvirt on debian systems
+    apt:
+      name:
+        - qemu-kvm
+        - libvirt-daemon
+        - bridge-utils
+        - libvirt-clients
+        - cloud-image-utils
+        - libvirt-daemon-system
+      state: present
+
+  - name: install python-pip and python utilities for python 2 on debian systems
+    apt:
+      name: [ python-pip, python-setuptools, python-lxml, python-libvirt ]
+      state: present
+      update_cache: yes
+      install_recommends: no
+      cache_valid_time: 3600
+    when: ansible_python_version is version('3', '<')
+
+  - name: install python3-pip and python utilities for python 3 on debian systems
+    apt:
+      name: [ python3-pip, python3-setuptools, python3-lxml, python3-libvirt ]
+      state: present
+      update_cache: yes
+      install_recommends: no
+      cache_valid_time: 3600
+    when: ansible_python_version is version('3', '>=')
+
   when: ansible_os_family == "Debian"
 
 - name: install libvirt on redhat systems
@@ -20,7 +39,10 @@
       - qemu-kvm
       - libvirt
       - libvirt-python
-      - bridge-utils      
+      - bridge-utils
+      - python-lxml
+      - cloud-utils
+      - genisoimage
     state: present
   when: ansible_os_family == "RedHat"
 

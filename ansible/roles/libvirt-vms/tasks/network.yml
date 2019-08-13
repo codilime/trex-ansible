@@ -6,12 +6,22 @@
     command: define
     xml: '{{ lookup("template", "network.xml.j2") }}'
 
-- name: start libvirt network
+- name: start libvirt default network
+  virt_net:
+    name: default
+    state: active
+
+- name: autostart libvirt default network
+  virt_net:
+    name: default
+    autostart: yes
+
+- name: start libvirt "{{ libvirt_network_name }}" network
   virt_net:
     name: "{{ libvirt_network_name }}"
     state: active
 
-- name: autostart libvirt network
+- name: autostart libvirt "{{ libvirt_network_name }}" network
   virt_net:
     name: "{{ libvirt_network_name }}"
     autostart: yes
