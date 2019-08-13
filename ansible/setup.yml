@@ -24,11 +24,14 @@
   become: true
   roles:
     - { role: libvirt-vms, tags: [ libvirt-vms ] }
-  tags: [ libvirt ]
+  tags: [ always, libvirt ]
 
 - name: Setup T-Rex Traffic Generator
   hosts: trex
   become: yes
+  pre_tasks:
+    - setup:
+      tags: always
   roles:
     - { role: trex,   tags: [ trex ] }
   tags: [ app ]
