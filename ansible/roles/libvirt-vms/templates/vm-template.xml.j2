@@ -3,7 +3,7 @@
   <memory unit='MiB'>{{ libvirt_guest_memory_mib }}</memory>
   <vcpu placement='static'>{{ libvirt_guest_cpu_count }}</vcpu>
   <os>
-    <type arch='x86_64' machine='pc-i440fx-bionic'>hvm</type>
+    <type arch='x86_64' machine='pc'>hvm</type>
     <boot dev='hd'/>
   </os>
   <features>
