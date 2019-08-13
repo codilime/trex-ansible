@@ -1,8 +1,8 @@
 ---
 
-- name: set vm name fact to trex-{{ vm+1 }}
+- name: set vm name fact to {{ ansible_host }}-trex-vm-{{ vm+1 }}
   set_fact:
-    vm_name: "trex-{{ vm+1 }}"
+    vm_name: "{{ ansible_host }}-trex-vm-{{ vm+1 }}"
 
 - name: check if base image volume for {{ vm_name }} already exists
   command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ vm_name }}-disk.qcow"
@@ -86,4 +86,19 @@
     ansible_port: 22
     ansible_user: ubuntu
     groups: [ libvirt_vms, trex ]
+    ansible_ssh_common_args: -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+        -o ProxyCommand="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+        -o ServerAliveInterval=5 -o ServerAliveCountMax=60 -W %h:%p -q
+        {{ ansible_user }}@{{ ansible_host }} -p {{ ansible_port|default(22) }}"
   changed_when: false
+  when: ansible_connection != "local"
+
+- name: add host to trex inventory group (ansible_connection=local)
+  add_host:
+    hostname: '{{ vm_name }}'
+    ansible_host: '{{ vm_ip }}'
+    ansible_port: 22
+    ansible_user: ubuntu
+    groups: [ libvirt_vms, trex ]
+  changed_when: false 
+  when: ansible_connection == "local"
