@@ -42,15 +42,9 @@
       - bridge-utils
       - python-lxml
       - cloud-utils
+      - genisoimage
     state: present
   when: ansible_os_family == "RedHat"
-
-- name: symlink kvm-spice on centos
-  file:
-    state: link
-    src: kvm
-    dest: /usr/bin/kvm-spice
-  when: ansible_distribution == "Debian"
 
 - name: enable libvirtd daemon
   systemd:
