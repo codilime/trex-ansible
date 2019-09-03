@@ -20,3 +20,5 @@
     index_var: vm
   when: (cleanup_vms is defined) and (cleanup_vms == True)
 
+- debug:
+    msg: "{{ groups['trex'] }}"

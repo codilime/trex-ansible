@@ -79,21 +79,32 @@
     host: '{{ vm_ip }}'
     search_regex: OpenSSH
 
-- name: add host to trex inventory group
+# when ansible_user is not explicitly set in inventory or with -u
+- name: set libvirt_ssh_user
+  set_fact:
+    libvirt_ssh_user: "{{ hostvars[ansible_host].ansible_env.USER }}"
+  when: ansible_user is not defined
+
+- debug:
+    var: libvirt_ssh_user
+
+- name: add {{ vm_name }} to trex inventory group
   add_host:
     hostname: '{{ vm_name }}'
     ansible_host: '{{ vm_ip }}'
     ansible_port: 22
     ansible_user: ubuntu
-    groups: [ libvirt_vms, trex ]
+    groups: [ 'libvirt_vms', 'trex' ]
     ansible_ssh_common_args: -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
-        -o ProxyCommand="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
-        -o ServerAliveInterval=5 -o ServerAliveCountMax=60 -W %h:%p -q
-        {{ ansible_user }}@{{ ansible_host }} -p {{ ansible_port|default(22) }}"
+      -o ProxyCommand="ssh {{ lookup('env', 'ANSIBLE_SSH_ARGS') | default('') }} 
+      -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no 
+      -o ServerAliveInterval=5 -o ServerAliveCountMax=60 -W %h:%p -q
+      {{ ansible_user|default(libvirt_ssh_user) }}@{{ ansible_host }} -p {{ ansible_port|default(22) }}"
   changed_when: false
   when: ansible_connection != "local"
+  loop: "{{ ansible_play_hosts_all }}"
 
-- name: add host to trex inventory group (ansible_connection=local)
+- name: add {{ vm_name }} to trex inventory group (ansible_connection=local)
   add_host:
     hostname: '{{ vm_name }}'
     ansible_host: '{{ vm_ip }}'
@@ -102,3 +113,4 @@
     groups: [ libvirt_vms, trex ]
   changed_when: false 
   when: ansible_connection == "local"
+  loop: "{{ ansible_play_hosts_all }}"
