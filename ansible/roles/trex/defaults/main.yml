@@ -1,4 +1,4 @@
 ---
 
-trex_version: '2.60'
+trex_version: '2.61'
 trex_release_url: https://trex-tgn.cisco.com/trex/release/v{{ trex_version }}.tar.gz
