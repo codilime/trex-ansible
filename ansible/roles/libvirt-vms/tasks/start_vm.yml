@@ -85,9 +85,6 @@
     libvirt_ssh_user: "{{ hostvars[ansible_host].ansible_env.USER }}"
   when: ansible_user is not defined
 
-- debug:
-    var: libvirt_ssh_user
-
 - name: add {{ vm_name }} to trex inventory group
   add_host:
     hostname: '{{ vm_name }}'
