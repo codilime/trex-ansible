@@ -1,0 +1,79 @@
+---
+
+- name: set vm name fact for vm {{ item }}
+  set_fact:
+    vm_name: "{{ ansible_hostname }}-{{ 'vm-%02x' | format(item) }}"
+
+- name: print vm {{ item }} hostname
+  debug:
+    msg: "{{ vm_name }}"
+
+- name: check if base image volume for vm {{ item }} already exists
+  command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ vm_name }}-disk.qcow"
+  register: vm_vol_info
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
+- name: create volume for vm {{ item }} if does not exist
+  command: "virsh vol-clone --pool {{ libvirt_pool_name }} {{ libvirt_vol_name }} {{ vm_name }}-disk.qcow"
+  when: vm_vol_info.rc != 0
+
+- name: resize vm {{ item }} volume if didn't exist
+  command: "qemu-img resize {{ vm_name }}-disk.qcow {{ libvirt_vol_size }}"
+  args:
+    chdir: "{{ libvirt_pool_dir }}"
+  when: vm_vol_info.rc != 0
+
+- name: template meta-data and user-data for nocloud iso for vm {{ item }}
+  template:
+    src: "{{ data_file }}.j2"
+    dest: "{{ libvirt_pool_dir }}/{{ vm_name }}-{{ data_file }}.txt"
+  loop:
+    - user-data
+    - meta-data
+  loop_control:
+    loop_var: data_file
+  register: nocloud
+
+- name: generate nocloud-iso for vm {{ item }}
+  command: cloud-localds {{ vm_name }}-nocloud.iso {{ vm_name }}-user-data.txt {{ vm_name }}-meta-data.txt
+  args:
+    chdir: "{{ libvirt_pool_dir }}"
+  when: nocloud is changed
+
+- name: define vm {{ item }} from xml
+  virt:
+    command: define
+    xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
+
+- name: start vm {{ item }}
+  virt:
+    name: "{{ vm_name }}"
+    state: running
+
+- name: wait until vm {{ item }} starts and gets ip address
+  command: virsh domifaddr {{ vm_name }}
+  changed_when: false
+  register: output
+  until: output.stdout.find('ipv4') != -1
+  delay: 3
+  retries: 60
+
+  
+- name: get vm {{ item }} ip address
+  shell: >
+    virsh domifaddr {{ vm_name }} | grep ipv4 | head -n1 |awk '{ print $4 }' | cut -d/ -f1
+  register: domifaddr
+  changed_when: false
+
+- name: set vm {{ item }} ip address fact
+  set_fact:
+    vm_ip: "{{ domifaddr.stdout }}"
+
+- name: wait for vm {{ item }} ssh
+  wait_for:
+    port: 22
+    host: '{{ vm_ip }}'
+    search_regex: OpenSSH
+

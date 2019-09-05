@@ -1,21 +1,32 @@
 ---
 
-- name: generate sequence for launching vms
-  set_fact:
-    vm_sequence: "{{ range(1, libvirt_trex_vm_count+1) | list }}"
+#- name: generate sequence for launching vms
+#  set_fact:
+#    vm_sequence: "{{ range(1, libvirt_trex_vm_count+1) | list | map('regex_replace', '(.*)', ansible_hostname+'-vm-\\1') | list }}"
+#
+#- debug:
+#    msg: "{{ vm_sequence }}"
+
+- name: find local public ssh key and register it's contents
+  slurp:
+    src: "{{ lookup('first_found', ssh_local_public_keys_locations) }}"
+  register: ssh_key
+  become: false
+  delegate_to: localhost
 
 - include_tasks: pool.yml
 
 - include_tasks: network.yml
 
-- include_tasks: start_vm.yml
-  loop: "{{ vm_sequence }}"
-  loop_control:
-    index_var: vm
-  when: (cleanup_vms is not defined) or (cleanup_vms == False)
+- include_tasks: launch_vms.yml
+  loop: "{{ range(1, libvirt_trex_vm_count+1)|list }}"
 
-- include_tasks: cleanup.yml
-  loop: "{{ vm_sequence }}"
-  loop_control:
-    index_var: vm
-  when: (cleanup_vms is defined) and (cleanup_vms == True)
+- include_tasks: add_hosts.yml
+  loop: "{{ range(1, libvirt_trex_vm_count+1)|list }}"
+
+
+  #- include_tasks: cleanup.yml
+  #  loop: "{{ vm_sequence }}"
+  #  loop_control:
+  #    index_var: vm
+  #  when: (cleanup_vms is defined) and (cleanup_vms == True)
