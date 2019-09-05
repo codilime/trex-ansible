@@ -2,7 +2,7 @@
 
 - name: set vm name fact to {{ ansible_host }}-trex-vm-{{ vm+1 }}
   set_fact:
-    vm_name: "{{ ansible_host }}-trex-vm-{{ vm+1 }}"
+    vm_name: "trex-vm-{{ vm+1 }}"
 
 - name: check if base image volume for {{ vm_name }} already exists
   command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ vm_name }}-disk.qcow"
@@ -87,7 +87,7 @@
 
 - name: add {{ vm_name }} to trex inventory group
   add_host:
-    hostname: '{{ vm_name }}'
+    hostname: '{{ host }}-{{ vm_name }}'
     ansible_host: '{{ vm_ip }}'
     ansible_port: 22
     ansible_user: ubuntu
@@ -100,10 +100,13 @@
   changed_when: false
   when: ansible_connection != "local"
   loop: "{{ ansible_play_hosts_all }}"
+  loop_control:
+    loop_var: host
+
 
 - name: add {{ vm_name }} to trex inventory group (ansible_connection=local)
   add_host:
-    hostname: '{{ vm_name }}'
+    hostname: '{{ host }}-{{ vm_name }}'
     ansible_host: '{{ vm_ip }}'
     ansible_port: 22
     ansible_user: ubuntu
@@ -111,3 +114,6 @@
   changed_when: false 
   when: ansible_connection == "local"
   loop: "{{ ansible_play_hosts_all }}"
+  loop_control:
+    loop_var: host
+
