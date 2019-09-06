@@ -1,9 +1,14 @@
-libvirt-01
-libvirt-02
+libvirt-01 libvirt_trex_vm_count=2
+libvirt-02 libvirt_trex_vm_count=2
+#trex-01
+#trex-02
 
 [trex]
+#trex-01
+#trex-02
 
 [libvirt]
 #localhost ansible_connection=local
 libvirt-01
 libvirt-02
+
