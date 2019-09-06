@@ -11,7 +11,7 @@
   become: true
   roles:
     - {
-        role: libvirt-setup,
+        role: libvirt/setup,
         tags: [ libvirt-setup ],
         when: enable_libvirt_setup == True
       }
@@ -23,7 +23,7 @@
   hosts: libvirt
   become: true
   roles:
-    - { role: libvirt-vms, tags: [ libvirt-vms ] }
+    - { role: libvirt/vms, tags: [ libvirt-vms ] }
   tags: [ libvirt ]
 
 # serial must exist here due to fact that this module bypasses the play host loop 
@@ -33,7 +33,7 @@
   hosts: libvirt
   become: true
   roles:
-    - { role: libvirt-discover, tags: [ libvirt-discover ] }
+    - { role: libvirt/discover, tags: [ libvirt-discover ] }
   serial: 1
   tags: [ always, discover ]
 
