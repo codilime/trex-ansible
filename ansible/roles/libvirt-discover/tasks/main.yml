@@ -1,0 +1,4 @@
+---
+
+- include_tasks: add_hosts.yml
+  loop: "{{ range(1, libvirt_trex_vm_count+1)|list }}"

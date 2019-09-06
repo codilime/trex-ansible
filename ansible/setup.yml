@@ -24,7 +24,18 @@
   become: true
   roles:
     - { role: libvirt-vms, tags: [ libvirt-vms ] }
-  tags: [ always, libvirt ]
+  tags: [ libvirt ]
+
+# serial must exist here due to fact that this module bypasses the play host loop 
+# and only runs once for all the hosts in the play. 
+# Runs always to have trex group defined. 
+- name: Discover TRex libvirt virtual machines
+  hosts: libvirt
+  become: true
+  roles:
+    - { role: libvirt-discover, tags: [ libvirt-discover ] }
+  serial: 1
+  tags: [ always, discover ]
 
 - name: Setup T-Rex Traffic Generator
   hosts: trex

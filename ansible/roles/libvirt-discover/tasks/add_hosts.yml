@@ -1,0 +1,56 @@
+---
+
+- name: set vm name fact for vm {{ item }}
+  set_fact:
+    vm_name: "{{ ansible_hostname }}-{{ 'vm-%02x' | format(item) }}"
+
+- name: get vm {{ item }} ip address
+  shell: >
+    virsh domifaddr {{ vm_name }} | grep ipv4 | head -n1 |awk '{ print $4 }' | cut -d/ -f1
+  register: domifaddr
+  changed_when: false
+
+- name: set vm {{ item }} ip address fact
+  set_fact:
+    vm_ip: "{{ domifaddr.stdout }}"
+
+- name: wait for vm {{ item }} ssh
+  wait_for:
+    port: 22
+    host: '{{ vm_ip }}'
+    search_regex: OpenSSH
+
+# when ansible_user is not explicitly set in inventory or with -u
+- name: set libvirt_ssh_user for vm {{ item }}
+  set_fact:
+    libvirt_ssh_user: "{{ hostvars[ansible_host].ansible_env.USER }}"
+  when: ansible_user is not defined
+
+- name: print vm {{ item }} info
+  debug:
+    msg: "host: {{ ansible_hostname }}, name: {{ vm_name }}, ip: {{ vm_ip }}"
+
+- name: add vm {{ item }} to trex inventory group
+  add_host:
+    hostname: '{{ vm_name }}'
+    ansible_host: '{{ vm_ip }}'
+    ansible_port: 22
+    ansible_user: ubuntu
+    groups: [ 'libvirt_vms', 'trex' ]
+    ansible_ssh_common_args: -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+      -o ProxyCommand="ssh {{ lookup('env', 'ANSIBLE_SSH_ARGS') | default('') }} 
+      -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no 
+      -o ServerAliveInterval=5 -o ServerAliveCountMax=60 -W %h:%p -q
+      {{ ansible_user|default(libvirt_ssh_user) }}@{{ ansible_host }} -p {{ ansible_port|default(22)   }}"
+  changed_when: false
+  when: ansible_connection != "local"
+
+- name: add vm {{ item }} to trex inventory group (ansible_connection=local)
+  add_host:
+    hostname: '{{ vm_name }}'
+    ansible_host: '{{ vm_ip }}'
+    ansible_port: 22
+    ansible_user: ubuntu
+    groups: [ libvirt_vms, trex ]
+  changed_when: false 
+  when: ansible_connection == "local"

@@ -1,12 +1,5 @@
 ---
 
-#- name: generate sequence for launching vms
-#  set_fact:
-#    vm_sequence: "{{ range(1, libvirt_trex_vm_count+1) | list | map('regex_replace', '(.*)', ansible_hostname+'-vm-\\1') | list }}"
-#
-#- debug:
-#    msg: "{{ vm_sequence }}"
-
 - name: find local public ssh key and register it's contents
   slurp:
     src: "{{ lookup('first_found', ssh_local_public_keys_locations) }}"
@@ -20,10 +13,6 @@
 
 - include_tasks: launch_vms.yml
   loop: "{{ range(1, libvirt_trex_vm_count+1)|list }}"
-
-- include_tasks: add_hosts.yml
-  loop: "{{ range(1, libvirt_trex_vm_count+1)|list }}"
-
 
   #- include_tasks: cleanup.yml
   #  loop: "{{ vm_sequence }}"
