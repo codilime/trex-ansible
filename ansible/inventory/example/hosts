@@ -1,5 +1,4 @@
-libvirt-01 libvirt_trex_vm_count=2
-libvirt-02 libvirt_trex_vm_count=2
+libvirt-01 libvirt_trex_vm_count=2 ansible_user=vagrant
 #trex-01
 #trex-02
 
@@ -7,8 +6,9 @@ libvirt-02 libvirt_trex_vm_count=2
 #trex-01
 #trex-02
 
+[suite]
+libvirt-01
+
 [libvirt]
 #localhost ansible_connection=local
 libvirt-01
-libvirt-02
-

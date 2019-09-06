@@ -1,10 +1,10 @@
 ---
 
-- name: Gather facts always, regardless of tags
-  hosts: all
-  roles:
-    - { role: checks, tags: [ checks ] }
-  tags: [ always ]
+#- name: Gather facts always, regardless of tags
+#  hosts: all
+#  roles:
+#    - { role: checks, tags: [ checks ] }
+#  tags: [ always ]
 
 - name: Setup libvirt machines and install libvirt
   hosts: libvirt
@@ -37,12 +37,19 @@
   serial: 1
   tags: [ always, discover ]
 
-- name: Setup T-Rex Traffic Generator
+- name: Setup T-Rex Traffic Generator and run tests
   hosts: trex
   become: yes
   pre_tasks:
     - setup:
       tags: always
   roles:
-    - { role: trex,   tags: [ trex ] }
+    - { role: trex,   tags: [ trex  ] }
   tags: [ app ]
+
+- name: Run test suite
+  hosts: suite
+  become: yes
+  roles:
+    - { role: suite,  tags: [ suite ] }
+  tags: [ app ] 

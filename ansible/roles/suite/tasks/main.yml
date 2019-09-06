@@ -1,0 +1,20 @@
+---
+
+- name: create trex folder
+  file:
+    path: /opt/suite/
+    state: directory
+
+- name: template run script
+  template:
+    src: run.sh.j2
+    dest: /opt/suite/run.sh.j2
+    mode: 0755
+
+- name: run script and register output
+  command: /opt/suite/run.sh.j2
+  register: suite_output
+
+- name: print output
+  debug:
+    msg: "{{ suite_output.stdout }}"

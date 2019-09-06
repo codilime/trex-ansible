@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo " * Running some tests..."
+
+
+{% for host in groups['trex'] %}
+  {{ host }} {{ hostvars[host][ansible_host] }}
+{% endfor %}
