@@ -1,36 +1,36 @@
 ---
 # That's quick & dirty for now, I know.
 
-- name: set vm name fact to trex-{{ vm+1 }}
+- name: set vm name fact for vm {{ item }}
   set_fact:
-    vm_name: "trex-{{ vm+1 }}"
+    vm_name: "{{ ansible_hostname }}-{{ 'vm-%02x' | format(item) }}"
 
-- name: shutdown {{ vm_name }}
+- name: shutdown vm {{ item }}
   virt:
     name: "{{ vm_name }}"
     state: shutdown
   ignore_errors: true
 
-- name: undefine {{ vm_name }}
+- name: undefine vm {{ item }}
   virt:
     name: "{{ vm_name }}"
     command: undefine
   ignore_errors: true
 
-- name: check if base image volume for {{ vm_name }} already exists
+- name: check if base image volume for vm {{ item }} already exists
   command: "virsh vol-info --pool {{ libvirt_pool_name }} {{ vm_name }}-disk.qcow"
   register: vm_vol_info
   failed_when: false
   changed_when: false
   check_mode: false
 
-- name: delete {{ vm_name }} disk volume
+- name: delete vm {{ item }} disk volume
   command:
     virsh vol-delete --pool {{ libvirt_pool_name }} {{ vm_name }}-disk.qcow
   ignore_errors: true
   when: vm_vol_info.rc == 0
 
-- name: remove {{ vm_name }} meta-data, user-data and nocloud iso
+- name: remove vm {{ item }} meta-data, user-data and nocloud iso
   file:
     dest: "{{ libvirt_pool_dir }}/{{ vm_name }}-{{ data_file }}"
     state: absent
