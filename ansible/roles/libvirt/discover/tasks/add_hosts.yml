@@ -52,5 +52,6 @@
     ansible_port: 22
     ansible_user: ubuntu
     groups: [ libvirt_vms, trex ]
+    ansible_ssh_common_args: -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
   changed_when: false 
   when: ansible_connection == "local"
