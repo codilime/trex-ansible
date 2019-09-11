@@ -25,6 +25,10 @@
     chdir: "{{ libvirt_pool_dir }}"
   when: vm_vol_info.rc != 0
 
+- name: check for cloud-localds binary
+  command: which cloud-localds
+  changed_when: false
+
 - name: template meta-data and user-data for nocloud iso for vm {{ item }}
   template:
     src: "{{ data_file }}.j2"
