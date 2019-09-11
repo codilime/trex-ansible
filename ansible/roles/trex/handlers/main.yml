@@ -1,0 +1,7 @@
+---
+
+- name: restart trex
+  systemd:
+    name: trex
+    state: restarted
+    daemon_reload: yes

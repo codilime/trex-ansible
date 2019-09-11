@@ -39,12 +39,14 @@
   template:
     src: trex_cfg.yaml.j2
     dest: /etc/trex_cfg.yaml
+  notify: restart trex
 
 - name: generating trex systemd unit
   template:
     src: trex_service.j2
     dest: /etc/systemd/system/trex.service
     mode: 0644
+  notify: restart trex
 
 - name: enable and start trex
   systemd:
