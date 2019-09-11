@@ -18,3 +18,9 @@
 - name: print output
   debug:
     msg: "{{ suite_output.stdout }}"
+
+- name: put host information to file (debug)
+  template:
+    src: hostinfo.j2
+    dest: /opt/suite/hostinfo
+

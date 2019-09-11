@@ -1,0 +1,5 @@
+{% for host in groups['trex'] %}
+
+{{ hostvars[] | to_nice_json }}
+
+{% endfor %}
