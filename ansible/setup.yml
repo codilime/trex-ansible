@@ -1,11 +1,5 @@
 ---
 
-- name: Gather facts always, regardless of tags
-  hosts: all
-  roles:
-    - { role: checks, tags: [ checks ] }
-  tags: [ always ]
-
 - name: Setup libvirt machines and install libvirt
   hosts: libvirt
   become: true
