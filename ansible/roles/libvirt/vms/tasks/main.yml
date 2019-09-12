@@ -21,8 +21,8 @@
   - include_tasks: cleanup.yml
     loop: "{{ range(1, libvirt_trex_vm_count+1)|list }}"
     tags: [ cleanup ]
-  - fail:
+  - name: stop playbook grecefully after cleaning up
+    fail:
       msg="Stopping Playbook after removing all VMs (cleanup)"
     tags: [ cleanup ]
   when: (cleanup_vms is defined) and (cleanup_vms == True)
-   
