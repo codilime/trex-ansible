@@ -53,4 +53,5 @@
     name: trex
     daemon_reload: yes
     state: started
+    enabled: yes
     masked: no
